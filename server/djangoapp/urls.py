@@ -16,9 +16,9 @@ urlpatterns = [
 
     # path for registration
 
-    # path for login
-
-    # path for logout
+    path(route='login', view=views.login_request, name='login'),
+    path('login/', views.login_request, name='login'),
+    path('logout/', views.logout_request, name='logout'),
     path(route='index', view=views.get_dealerships, name='index'),
     path(route='', view=views.get_dealerships, name='index'),
     path('admin/', admin.site.urls),

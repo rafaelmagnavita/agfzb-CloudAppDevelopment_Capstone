@@ -38,13 +38,13 @@
                         <a class="btn btn-outline-primary ml-auto mr-3" href="">({{ user.first_name|default:user.username }})</a>
     
                     <!-- Signout Link -->
-                    <a class="btn btn-outline-primary" href="">Logout</a>
+                    <a class="btn btn-outline-primary" href="{% url 'djangoapp:logout' %}">Logout</a>
                 {% else %}
                     <!-- Login Form -->
-                    <form class="form-inline my-2 my-lg-0 ml-auto" method="post" action="{% url 'login' %}">
+                    <form class="form-inline my-2 my-lg-0 ml-auto" method="post" action="{% url 'djangoapp:login' %}">
                         {% csrf_token %}
                         <input class="form-control mr-sm-2" type="text" name="username" placeholder="Username">
-                        <input class="form-control mr-sm-2" type="password" name="password" placeholder="Password">
+                        <input class="form-control mr-sm-2" type="password" name="psw" placeholder="Password">
                         <button class="btn btn-primary my-2 my-sm-0" type="submit">Login</button>
                     </form>
     
