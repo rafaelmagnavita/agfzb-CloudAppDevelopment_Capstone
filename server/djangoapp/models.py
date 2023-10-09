@@ -19,7 +19,6 @@ class CarModel(models.Model):
         ('Sedan', 'Sedan'),
         ('SUV', 'SUV'),
         ('WAGON', 'Wagon'),
-        # Add more choices as needed
     ]
     type = models.CharField(max_length=10, choices=CAR_TYPE_CHOICES)
     year = models.DateField()
