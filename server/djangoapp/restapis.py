@@ -3,20 +3,26 @@ import json
 from .models import CarDealer, DealerReview
 from requests.auth import HTTPBasicAuth
 
-def get_request(url, **kwargs):
+def get_request(url, api_key=None, **kwargs):
     print(kwargs)
     print("GET from {} ".format(url))
+    
     try:
-        # Call get method of requests library with URL and parameters
-        response = requests.get(url, headers={'Content-Type': 'application/json'},
+        if api_key:
+            response = requests.get(url, headers={'Content-Type': 'application/json'},
+                                    params=kwargs, auth=HTTPBasicAuth('apikey', api_key))
+        else:
+            response = requests.get(url, headers={'Content-Type': 'application/json'},
                                     params=kwargs)
     except:
         # If any error occurs
         print("Network exception occurred")
+    
     status_code = response.status_code
     print("With status {} ".format(status_code))
     json_data = json.loads(response.text)
     return json_data
+
 
 # Create a `post_request` to make HTTP POST requests
 # e.g., response = requests.post(url, params=kwargs, json=payload)
@@ -62,11 +68,25 @@ def get_dealer_reviews_from_cf(url, dealer_id, **kwargs):
     return results
 
 
+def analyze_review_sentiments(dealerreview):
+    nlu_url = "https://api.us-south.natural-language-understanding.watson.cloud.ibm.com/instances/f12c0902-455f-4c31-92fa-de6dce857143"
 
-# Create an `analyze_review_sentiments` method to call Watson NLU and analyze text
-# def analyze_review_sentiments(text):
-# - Call get_request() with specified arguments
-# - Get the returned sentiment label such as Positive or Negative
+    params = {
+        'version': '2022-04-07',
+        'features': 'sentiment',
+        'language': 'en',
+        'text': dealerreview.review
+    }
 
+    api_key = "sSFTUPEM7iqJ4TAqvN8HY3xqyXLumFLkuHCpO112tecc"
+
+    try:
+        response = get_request(nlu_url, api_key=api_key, **params)
+        sentiment_label = response.get('sentiment', {}).get('document', {}).get('label')
+        return sentiment_label
+
+    except Exception as e:
+        print(f"Error analyzing sentiment: {e}")
+        return None
 
 
