@@ -52,9 +52,10 @@ def get_dealer_reviews_from_cf(url, dealer_id, **kwargs):
         print(json_result)
         for review in reviews:
             dealer_doc = review
+            sentiment = dealer_doc.get("sentiment", None)
             review_obj = DealerReview(dealership=dealer_doc["dealership"], name=dealer_doc["name"], purchase=dealer_doc["purchase"],
                                    review=dealer_doc["review"], purchase_date=dealer_doc["purchase_date"], car_make=dealer_doc["car_make"],
-                                   car_model=dealer_doc["car_model"], car_year=dealer_doc["car_year"], sentiment=dealer_doc["sentiment"], id=dealer_doc["id"]
+                                   car_model=dealer_doc["car_model"], car_year=dealer_doc["car_year"], sentiment=sentiment, id=dealer_doc["id"]
                                 )
             results.append(review_obj)
 
