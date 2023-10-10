@@ -109,14 +109,20 @@ def get_dealerships(request):
 def get_dealer_details(request, dealer_id):
     context = {}
     if request.method == "GET":
-        url = "https://rafaelmagnav-5000.theiadocker-3-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/api/get_reviews?id=" + dealer_id
-        # Get dealers from the URL
-        dealerships = get_dealer_reviews_from_cf(url)
-        # Concat all dealer's short name
-        dealer_names = ' '.join([dealer.short_name for dealer in dealerships])
-        # Return a list of dealer short name
-        context['dealer_names'] = dealer_names
-        return render(request, 'djangoapp/index.html', context)
+        # Assuming get_dealer_reviews_from_cf returns a list of reviews
+        url = f"https://rafaelmagnav-5000.theiadocker-3-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/api/get_reviews"
+        
+        dealer_reviews = get_dealer_reviews_from_cf(url, dealer_id)
+        
+        # Assuming each review has a 'comment' attribute, modify as per your actual data structure
+        reviews_list = [review.review for review in dealer_reviews]
+
+        # Append the list of reviews to context
+        context['reviews_list'] = reviews_list
+        
+        # Return a HttpResponse with the reviews
+        return render(request, 'djangoapp/dealer_details.html', context)
+
 
 # Create a `add_review` view to submit a review
 # def add_review(request, dealer_id):
