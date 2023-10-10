@@ -106,10 +106,10 @@ def get_dealerships(request):
         return render(request, 'djangoapp/index.html', context)
 
 
-def get_dealer_details(request):
+def get_dealer_details(request, dealer_id):
     context = {}
     if request.method == "GET":
-        url = "https://rafaelmagnav-3000.theiadocker-3-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/dealerships/get"
+        url = "https://rafaelmagnav-5000.theiadocker-3-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/api/get_reviews?id=" + dealer_id
         # Get dealers from the URL
         dealerships = get_dealer_reviews_from_cf(url)
         # Concat all dealer's short name
