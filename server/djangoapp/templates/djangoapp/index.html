@@ -6,4 +6,13 @@
     <h2>
         Welcome to the home page!
     </h2>
+    {% if dealer_names %}
+    <ul>
+        <div>
+            <h1><b>{{ dealer_names }}</b></h1>
+        </div>
+    </ul>
+    {% else %}
+    <p>No dealers are available.</p>
+    {% endif %}
 {% endblock %}
