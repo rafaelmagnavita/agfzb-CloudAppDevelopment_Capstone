@@ -113,7 +113,6 @@ def get_dealer_details(request, dealer_id):
         url = f"https://rafaelmagnav-5000.theiadocker-3-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/api/get_reviews"
         dealer_reviews = get_dealer_reviews_from_cf(url, dealer_id)
         context['dealer_reviews'] = dealer_reviews
-
         url2 = "https://rafaelmagnav-3000.theiadocker-3-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/dealerships/get"
         dealerships = get_dealers_from_cf(url2)
         

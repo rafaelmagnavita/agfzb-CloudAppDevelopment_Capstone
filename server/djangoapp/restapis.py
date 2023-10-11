@@ -89,8 +89,9 @@ def analyze_review_sentiments(dealerreview):
     natural_language_understanding.set_service_url(url)
     
     response = natural_language_understanding.analyze(
-        text=dealerreview + "helo helo helo. this is a comment",
-        features=Features(sentiment=SentimentOptions(targets=[dealerreview + "helo helo helo. this is a comment"]))
+        text=dealerreview,
+        features=Features(sentiment=SentimentOptions(targets=[dealerreview])),
+        language="en"
     ).get_result()
     
     

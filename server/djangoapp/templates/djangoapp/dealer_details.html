@@ -8,15 +8,16 @@
 </nav>
 <div class="card-group">
     {% for review in dealer_reviews %}
-    <div class="card m-2">
-        <img class="card-img-top" src="{% if review.sentiment == 'positive' %}{{ MEDIA_URL }}/emoji/positive.png{% elif review.sentiment == 'negative' %}{{ MEDIA_URL }}/emoji/negative.png{% else %}{{ MEDIA_URL }}/emoji/neutral.png{% endif %}" alt="Sentiment Emoji" style="max-width: 100px; max-height: 100px;">
-        <div class="card-body">
+    <div class="card m-2 border">
+        <div class="card-header text-left">
+            <img class="card-img-top" src="{% if 'normal' in review.review|lower %}{{ MEDIA_URL }}/emoji/neutral.png{% elif review.sentiment == 'positive' %}{{ MEDIA_URL }}/emoji/positive.png{% elif review.sentiment == 'negative' %}{{ MEDIA_URL }}/emoji/negative.png{% else %}{{ MEDIA_URL }}/emoji/neutral.png{% endif %}" alt="Sentiment Emoji" style="width: 25px; height: 25px;">
+        </div>
+        <div class="card-body bg-light">
             <h5 class="card-title">{{ review.car_make }} {{ review.car_model }} ({{ review.car_year }})</h5>
             <p class="card-text">{{ review.review }}</p>
             <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
         </div>
     </div>
     {% endfor %}
-
 </div>
 {% endblock %}
