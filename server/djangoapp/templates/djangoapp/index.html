@@ -6,15 +6,15 @@
 <nav class="navbar navbar-light bg-light">
     <span class="navbar-brand mb-0 h1">Dealerships List</span>
 </nav>
-<table class="table">
+<table class="table" id="table" data-filter-control="true">
     <thead>
         <tr>
-            <th scope="col">ID</th>
-            <th scope="col">Dealer Name</th>
-            <th scope="col">City</th>
-            <th scope="col">Address</th>
-            <th scope="col">Zip</th>
-            <th scope="col">State</th>
+            <th data-field="id">ID</th>
+            <th data-field="full_name">Dealer Name</th>
+            <th data-field="city">City</th>
+            <th data-field="address">Address</th>
+            <th data-field="zip">Zip</th>
+            <th data-field="state" data-filter-control="select">State</th>
         </tr>
     </thead>
     <tbody>
@@ -25,10 +25,14 @@
                 <td>{{ dealership.city }}</td>
                 <td>{{ dealership.address }}</td>
                 <td>{{ dealership.zip }}</td>
-                <td>{{ dealership.state }}</td>
+                <td>{{ dealership.st }}</td>
             </tr>
         {% endfor %}
     </tbody>
 </table>
-
+<script>
+    $(function() {
+      $('#table').bootstrapTable()
+    })
+  </script>
 {% endblock %}
