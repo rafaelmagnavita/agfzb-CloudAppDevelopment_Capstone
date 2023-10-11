@@ -110,20 +110,17 @@ def get_dealerships(request):
 def get_dealer_details(request, dealer_id):
     context = {}
     if request.method == "GET":
-        # Assuming get_dealer_reviews_from_cf returns a list of reviews
         url = f"https://rafaelmagnav-5000.theiadocker-3-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/api/get_reviews"
-        
         dealer_reviews = get_dealer_reviews_from_cf(url, dealer_id)
+        context['dealer_reviews'] = dealer_reviews
+
+        url2 = "https://rafaelmagnav-3000.theiadocker-3-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/dealerships/get"
+        dealerships = get_dealers_from_cf(url2)
         
-        # Assuming each review has a 'comment' attribute, modify as per your actual data structure
-        reviews_list = ' , '.join([review.sentiment for review in dealer_reviews])
+        dealership_name = next((dealer.full_name for dealer in dealerships if dealer.id == dealer_id), None)
 
-        # Append the list of reviews to context
-        context['reviews_list'] = reviews_list
-        return HttpResponse(reviews_list)
-
-        # Return a HttpResponse with the reviews
-        #return render(request, 'djangoapp/dealer_details.html', context)
+        context['dealership_name'] = dealership_name
+        return render(request, 'djangoapp/dealer_details.html', context)
 
 
 @require_POST
