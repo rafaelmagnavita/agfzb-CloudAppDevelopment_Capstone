@@ -2,6 +2,9 @@ import requests
 import json
 from .models import CarDealer, DealerReview
 from requests.auth import HTTPBasicAuth
+from ibm_watson import NaturalLanguageUnderstandingV1
+from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
+from ibm_watson.natural_language_understanding_v1 import Features, SentimentOptions
 
 def get_request(url, api_key=None, **kwargs):
     print(kwargs)
@@ -55,10 +58,9 @@ def get_dealer_reviews_from_cf(url, dealer_id, **kwargs):
     
     if json_result:
         reviews = json_result
-        print(json_result)
         for review in reviews:
             dealer_doc = review
-            sentiment = dealer_doc.get("sentiment", None)
+            sentiment = analyze_review_sentiments(dealer_doc["review"])
             review_obj = DealerReview(dealership=dealer_doc["dealership"], name=dealer_doc["name"], purchase=dealer_doc["purchase"],
                                    review=dealer_doc["review"], purchase_date=dealer_doc["purchase_date"], car_make=dealer_doc["car_make"],
                                    car_model=dealer_doc["car_model"], car_year=dealer_doc["car_year"], sentiment=sentiment, id=dealer_doc["id"]
@@ -69,24 +71,20 @@ def get_dealer_reviews_from_cf(url, dealer_id, **kwargs):
 
 
 def analyze_review_sentiments(dealerreview):
-    nlu_url = "https://api.us-south.natural-language-understanding.watson.cloud.ibm.com/instances/f12c0902-455f-4c31-92fa-de6dce857143"
-
-    params = {
-        'version': '2022-04-07',
-        'features': 'sentiment',
-        'language': 'en',
-        'text': dealerreview.review
-    }
-
+    url = "https://api.us-south.natural-language-understanding.watson.cloud.ibm.com/instances/f12c0902-455f-4c31-92fa-de6dce857143"
     api_key = "sSFTUPEM7iqJ4TAqvN8HY3xqyXLumFLkuHCpO112tecc"
+    authenticator = IAMAuthenticator(api_key)
+    natural_language_understanding = NaturalLanguageUnderstandingV1(version='2021-08-01', authenticator=authenticator)
+    natural_language_understanding.set_service_url(url)
+    
+    response = natural_language_understanding.analyze(
+        text=dealerreview + "helo helo helo. this is a comment",
+        features=Features(sentiment=SentimentOptions(targets=[dealerreview + "helo helo helo. this is a comment"]))
+    ).get_result()
+    
+    
+    label = response['sentiment']['document']['label']
 
-    try:
-        response = get_request(nlu_url, api_key=api_key, **params)
-        sentiment_label = response.get('sentiment', {}).get('document', {}).get('label')
-        return sentiment_label
-
-    except Exception as e:
-        print(f"Error analyzing sentiment: {e}")
-        return None
+    return label
 
 

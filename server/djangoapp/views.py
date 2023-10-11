@@ -116,7 +116,7 @@ def get_dealer_details(request, dealer_id):
         dealer_reviews = get_dealer_reviews_from_cf(url, dealer_id)
         
         # Assuming each review has a 'comment' attribute, modify as per your actual data structure
-        reviews_list = ' , '.join([review.review for review in dealer_reviews])
+        reviews_list = ' , '.join([review.sentiment for review in dealer_reviews])
 
         # Append the list of reviews to context
         context['reviews_list'] = reviews_list
