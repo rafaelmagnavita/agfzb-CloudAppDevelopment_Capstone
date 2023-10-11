@@ -26,9 +26,20 @@ def get_request(url, api_key=None, **kwargs):
     json_data = json.loads(response.text)
     return json_data
 
-
-# Create a `post_request` to make HTTP POST requests
-# e.g., response = requests.post(url, params=kwargs, json=payload)
+def post_request(url, json_payload, **kwargs):
+    
+    print("POST to {} ".format(url))
+    
+    try:
+        response = requests.post(url, params=kwargs, json=json_payload)
+    except:
+        # If any error occurs
+        print("Network exception occurred")
+    
+    status_code = response.status_code
+    print("With status {} ".format(status_code))
+    json_data = json.loads(response.text)
+    return json_data
 
 def get_dealers_from_cf(url, **kwargs):
     results = []

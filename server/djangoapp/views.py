@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404, render, redirect
@@ -6,6 +6,8 @@ from .models import CarDealer, DealerReview
 from .restapis import get_dealers_from_cf,get_request, get_dealer_reviews_from_cf
 from django.contrib.auth import login, logout, authenticate
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.views.decorators.http import require_POST
 from datetime import datetime
 import logging
 import json
@@ -126,7 +128,36 @@ def get_dealer_details(request, dealer_id):
         #return render(request, 'djangoapp/dealer_details.html', context)
 
 
-# Create a `add_review` view to submit a review
-# def add_review(request, dealer_id):
-# ...
+@require_POST
+def add_review(request, dealer_id):
+    # Check if the user is authenticated
+    if not request.user.is_authenticated:
+        return HttpResponse("Unauthorized", status=401)
+
+    # Assuming you have a Dealer model, replace it with your actual model
+    dealer = get_object_or_404(YourDealerModel, id=dealer_id)
+
+    # Get data from the request
+    time = request.POST.get('time')  # Replace 'time' with the actual field name
+    name = request.POST.get('name')  # Replace 'name' with the actual field name
+    dealership = request.POST.get('dealership')  # Replace 'dealership' with the actual field name
+    review_text = request.POST.get('review')  # Replace 'review' with the actual field name
+    purchase = request.POST.get('purchase')  # Replace 'purchase' with the actual field name
+
+    # Create a dictionary object called review
+    review_data = {
+        'time': time,
+        'name': name,
+        'dealership': dealership,
+        'review': review_text,
+        'purchase': purchase,
+    }
+
+    dealer_review = DealerReview(dealer=dealer, **review_data)
+
+    # Save the review to the database
+    dealer_review.save()
+
+    # You can return a JsonResponse or redirect to a success page
+    return JsonResponse({'message': 'Review added successfully'}, status=201)
 
