@@ -1,9 +1,10 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.models import User
+from django.db import models
 from django.shortcuts import get_object_or_404, render, redirect
-from .models import CarDealer, DealerReview
-from .restapis import get_dealers_from_cf,get_request, get_dealer_reviews_from_cf
+from .models import CarDealer, DealerReview, DealerReviewForm
+from .restapis import get_dealers_from_cf,get_request, get_dealer_reviews_from_cf, post_request
 from django.contrib.auth import login, logout, authenticate
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -121,44 +122,55 @@ def get_dealer_details(request, dealer_id):
         context['dealership_name'] = dealership_name
         return render(request, 'djangoapp/dealer_details.html', context)
 
-
-@require_POST
 def add_review(request, dealer_id):
     # Check if the user is authenticated
     if not request.user.is_authenticated:
         return HttpResponse("Unauthorized", status=401)
 
-    dealer = get_object_or_404(CarDealer, id=dealer_id)
+    
+    dealer = CarDealer.objects.get(id=dealer_id)
 
-    car_make = request.POST.get('car_make')  
-    car_model = request.POST.get('car_model')
-    car_year = request.POST.get('car_year')
-    sentiment = None
-    id = request.POST.get('id')
-    name = request.POST.get('name')
-    dealership = request.POST.get('dealership')
-    review_text = request.POST.get('review')
-    purchase = request.POST.get('purchase')
-    purchase_date = request.POST.get('purchase_date')
 
-    # Create a dictionary object called review
-    review_data = {
-        'car_make': car_make,
-        'car_model': car_model,
-        'car_year': car_year,
-        'sentiment': sentiment,
-        'id': id,
-        'name': name,
-        'dealership': dealership,
-        'review': review_text,
-        'purchase': purchase,
-        'purchase_date': purchase_date,
-    }
+    if request.method == 'GET':
+        # Render the form for a GET request
+        form = DealerReviewForm()  # Use your actual form class here
+        return render(request, "djangoapp:add_review", {'form': form, 'dealer': dealer})
 
-    json_payload = {'review': review_data}
-    post_url = 'https://rafaelmagnav-5000.theiadocker-3-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/api/post_review'
-    response = post_request(post_url, json_payload, dealerId=dealer_id)
-    print(response)
-    return HttpResponse(response)
-    # return JsonResponse(response, status=response.get('status', 200))
+    elif request.method == 'POST':
+        car_make = request.POST.get('car_make')  
+        car_model = request.POST.get('car_model')
+        car_year = request.POST.get('car_year')
+        sentiment = None
+        id = request.POST.get('id')
+        name = request.POST.get('name')
+        dealership = request.POST.get('dealership')
+        review_text = request.POST.get('review')
+        purchase = request.POST.get('purchase')
+        purchase_date = request.POST.get('purchase_date')
 
+        # Format time and purchase_date
+        review_time = datetime.utcnow().isoformat()
+        purchase_year = datetime.strptime(purchase, '%Y-%m-%d').strftime("%Y")
+
+        # Create a dictionary object called review
+        review_data = {
+            'car_make': car_make,
+            'car_model': car_model,
+            'car_year': car_year,
+            'sentiment': sentiment,
+            'id': id,
+            'name': name,
+            'dealership': dealership,
+            'review': review_text,
+            'purchase': purchase,
+            'purchase_date': purchase_date,
+            'review_time': review_time,
+            'purchase_year': purchase_year,
+        }
+
+        json_payload = {'review': review_data}
+        post_url = 'https://rafaelmagnav-5000.theiadocker-3-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/api/post_review'
+        response = post_request(post_url, json_payload, dealerId=dealer_id)
+
+        # Redirect user to the dealer details page
+        return redirect("djangoapp:dealer_details", dealer_id=dealer_id)

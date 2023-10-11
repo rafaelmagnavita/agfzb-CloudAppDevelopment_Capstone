@@ -1,8 +1,10 @@
 from django.db import models
+from django import forms
 from django.utils.timezone import now
 
 
 # Create your models here.
+
 
 class CarMake(models.Model):
     name = models.CharField(max_length=100)
@@ -55,7 +57,6 @@ class CarDealer:
         self.short_name = short_name
 
 
-
     def __str__(self):
         return "Dealer name: " + self.full_name
 
@@ -76,3 +77,9 @@ class DealerReview:
 
     def __str__(self):
         return "Review id: " + self.id
+
+from models import DealerReview
+class DealerReviewForm(forms.ModelForm):
+    class Meta:
+        model = DealerReview
+        fields = ['purchase', 'review', 'purchase_date', 'car_model']
