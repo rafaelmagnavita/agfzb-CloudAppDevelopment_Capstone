@@ -3,16 +3,32 @@
 {% block title %}Home Page{% endblock %}
 
 {% block content %}
-    <h2>
-        Welcome to the home page!
-    </h2>
-    {% if dealer_names %}
-    <ul>
-        <div>
-            <h1><b>{{ dealer_names }}</b></h1>
-        </div>
-    </ul>
-    {% else %}
-    <p>No dealers are available.</p>
-    {% endif %}
+<nav class="navbar navbar-light bg-light">
+    <span class="navbar-brand mb-0 h1">Dealerships List</span>
+</nav>
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Dealer Name</th>
+            <th scope="col">City</th>
+            <th scope="col">Address</th>
+            <th scope="col">Zip</th>
+            <th scope="col">State</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for dealership in dealerships %}
+            <tr>
+                <th scope="row">{{ dealership.id }}</th>
+                <td><a href="{% url 'djangoapp:dealer_details' dealership.id %}">{{ dealership.full_name }}</a></td>
+                <td>{{ dealership.city }}</td>
+                <td>{{ dealership.address }}</td>
+                <td>{{ dealership.zip }}</td>
+                <td>{{ dealership.state }}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
 {% endblock %}
