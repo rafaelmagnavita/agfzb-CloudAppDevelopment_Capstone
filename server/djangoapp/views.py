@@ -134,30 +134,37 @@ def add_review(request, dealer_id):
     if not request.user.is_authenticated:
         return HttpResponse("Unauthorized", status=401)
 
-    # Assuming you have a Dealer model, replace it with your actual model
-    dealer = get_object_or_404(YourDealerModel, id=dealer_id)
+    dealer = get_object_or_404(CarDealer, id=dealer_id)
 
-    # Get data from the request
-    time = request.POST.get('time')  # Replace 'time' with the actual field name
-    name = request.POST.get('name')  # Replace 'name' with the actual field name
-    dealership = request.POST.get('dealership')  # Replace 'dealership' with the actual field name
-    review_text = request.POST.get('review')  # Replace 'review' with the actual field name
-    purchase = request.POST.get('purchase')  # Replace 'purchase' with the actual field name
+    car_make = request.POST.get('car_make')  
+    car_model = request.POST.get('car_model')
+    car_year = request.POST.get('car_year')
+    sentiment = None
+    id = request.POST.get('id')
+    name = request.POST.get('name')
+    dealership = request.POST.get('dealership')
+    review_text = request.POST.get('review')
+    purchase = request.POST.get('purchase')
+    purchase_date = request.POST.get('purchase_date')
 
     # Create a dictionary object called review
     review_data = {
-        'time': time,
+        'car_make': car_make,
+        'car_model': car_model,
+        'car_year': car_year,
+        'sentiment': sentiment,
+        'id': id,
         'name': name,
         'dealership': dealership,
         'review': review_text,
         'purchase': purchase,
+        'purchase_date': purchase_date,
     }
 
-    dealer_review = DealerReview(dealer=dealer, **review_data)
-
-    # Save the review to the database
-    dealer_review.save()
-
-    # You can return a JsonResponse or redirect to a success page
-    return JsonResponse({'message': 'Review added successfully'}, status=201)
+    json_payload = {'review': review_data}
+    post_url = 'https://rafaelmagnav-5000.theiadocker-3-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/api/post_review'
+    response = post_request(post_url, json_payload, dealerId=dealer_id)
+    print(response)
+    return HttpResponse(response)
+    # return JsonResponse(response, status=response.get('status', 200))
 
