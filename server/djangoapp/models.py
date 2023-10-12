@@ -77,9 +77,3 @@ class DealerReview:
 
     def __str__(self):
         return "Review id: " + self.id
-
-from models import DealerReview
-class DealerReviewForm(forms.ModelForm):
-    class Meta:
-        model = DealerReview
-        fields = ['purchase', 'review', 'purchase_date', 'car_model']
