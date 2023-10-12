@@ -5,23 +5,24 @@
   <form method="post" action="{% url 'djangoapp:add_review' dealer_id %}">
     {% csrf_token %}
     
-    <label for="review">Review Content:</label>
-    <textarea class="form-control" id="review" name="review" rows="2" required></textarea>
+    <label class="row" for="review">Review Content:</label>
+    <textarea class="row form-control" id="review" name="review" rows="2" required></textarea>
 
-    <div class="form-check">
+    <div class="row form-check">
       <input class="form-check-input" type="checkbox" name="purchase" id="purchase">
       <label class="form-check-label" for="purchase">Did you purchase a car from this dealer?</label>
     </div>
+    <div class="row">
+        <label for="car_model">Select a Car:</label>
+        <select name="car_model" id="car_model" class="form-select" required>
+        {% for car in cars %}
+            <option value="{{ car.id }}">{{ car.name }} - {{ car.make.name }} - {{ car.year|date:"Y" }}</option>
+        {% endfor %}
+        </select>
+    </div>
 
-    <label for="car_model">Select a Car:</label>
-    <select name="car_model" id="car_model" class="form-select" required>
-      {% for car in cars %}
-        <option value="{{ car.id }}">{{ car.name }} - {{ car.make.name }} - {{ car.year|date:"Y" }}</option>
-      {% endfor %}
-    </select>
-
-    <label for="purchase_date">Purchase Date:</label>
-    <input class="date-own form-control" type="text" name="purchase_date" id="purchase_date">
+    <label class="row" for="purchase_date">Purchase Date:</label>
+    <input class="date-own row form-control" type="text" name="purchase_date" id="purchase_date">
 
     <script type="text/javascript">
       $('.date-own').datepicker({
@@ -29,6 +30,6 @@
       });
     </script>
 
-    <button type="submit" class="btn btn-primary">Submit Review</button>
+    <button type="submit" class="row btn btn-primary m-4">Submit Review</button>
   </form>
 {% endblock %}
