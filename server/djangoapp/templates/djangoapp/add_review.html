@@ -1,3 +1,5 @@
+<!-- templates/djangoapp/add_review.html -->
+
 {% extends 'base.html' %}
 
 {% block content %}
@@ -5,15 +7,15 @@
   <form method="post" action="{% url 'djangoapp:add_review' dealer_id %}">
     {% csrf_token %}
     
-    <label class="row" for="review">Review Content:</label>
+    <label class="row" for="review"><strong>Review Content:</strong></label>
     <textarea class="row form-control" id="review" name="review" rows="2" required></textarea>
 
     <div class="row form-check">
       <input class="form-check-input" type="checkbox" name="purchase" id="purchase">
-      <label class="form-check-label" for="purchase">Did you purchase a car from this dealer?</label>
+      <label class="form-check-label" for="purchase"><strong>Did you purchase a car from this dealer?</strong></label>
     </div>
     <div class="row">
-        <label for="car_model">Select a Car:</label>
+        <label for="car_model"><strong>Select a Car:</strong></label>
         <select name="car_model" id="car_model" class="form-select" required>
         {% for car in cars %}
             <option value="{{ car.id }}">{{ car.name }} - {{ car.make.name }} - {{ car.year|date:"Y" }}</option>
@@ -21,12 +23,18 @@
         </select>
     </div>
 
-    <label class="row" for="purchase_date">Purchase Date:</label>
+    <label class="row" for="purchase_date"><strong>Purchase Date:</strong></label>
     <input class="date-own row form-control" type="text" name="purchase_date" id="purchase_date">
 
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+
     <script type="text/javascript">
-      $('.date-own').datepicker({
-        format: 'mm/dd/yyyy'
+      $(document).ready(function(){
+        $('.date-own').datepicker({
+          format: 'mm/dd/yyyy'
+        });
       });
     </script>
 

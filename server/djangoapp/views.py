@@ -147,17 +147,20 @@ def add_review(request, dealer_id):
 
         # Now update the json_payload["review"] with actual values
         json_payload = {
-            "review": {
                 "review": review,
                 "purchase": purchase,
                 "car_model": car_model,
                 "purchase_date": purchase_date,
+                "dealership": dealer_id
                 # Add other fields as needed
-            }
         }
 
+        url = "https://rafaelmagnav-5000.theiadocker-3-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/api/post_review"
+
         # Assume you have a method to post the review, replace 'post_review' with your actual method
-        post_review(json_payload)
+        response = post_request(url, json_payload)
+
+        return HttpResponseRedirect(reverse('djangoapp:dealer_details', args=(dealer_id,)))
+
 
         # Redirect to the dealer details page
-        return HttpResponseRedirect(reverse('djangoapp:dealer_details', args=(dealer_id,)))
