@@ -3,13 +3,14 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.models import User
 from django.db import models
 from django.shortcuts import get_object_or_404, render, redirect
-from .models import CarDealer, DealerReview
+from .models import CarDealer, DealerReview, CarMake, CarModel
 from .restapis import get_dealers_from_cf,get_request, get_dealer_reviews_from_cf, post_request
 from django.contrib.auth import login, logout, authenticate
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
-from datetime import datetime
+from django.utils.datetime_safe import datetime
+from django.urls import reverse
 import logging
 import json
 
@@ -122,5 +123,41 @@ def get_dealer_details(request, dealer_id):
         context['dealership_name'] = dealership_name
         return render(request, 'djangoapp/dealer_details.html', context)
 
-def add_review(request):
-    return None
+def add_review(request, dealer_id):
+    context = {}
+    # Assuming you have a Dealer model and a related Car model
+    # You need to replace 'Dealer' and 'Car' with your actual model names
+
+    if request.method == "GET":
+        # Query cars with the dealer id to be reviewed
+        cars = CarModel.objects.filter(dealer_id=dealer_id)
+        context['cars'] = cars
+        context['dealer_id'] = dealer_id
+        return render(request, 'djangoapp/add_review.html', context)
+
+    elif request.method == "POST":
+        # Update json_payload["review"] with actual values from the form
+        review = request.POST['review']
+        purchase = request.POST.get('purchase', False)
+        car_model = request.POST['car_model']
+        purchase_date_str = request.POST['purchase_date']
+
+        # Convert purchasedate to ISO format
+        purchase_date = datetime.strptime(purchase_date_str, '%m/%d/%Y').isoformat()
+
+        # Now update the json_payload["review"] with actual values
+        json_payload = {
+            "review": {
+                "review": review,
+                "purchase": purchase,
+                "car_model": car_model,
+                "purchase_date": purchase_date,
+                # Add other fields as needed
+            }
+        }
+
+        # Assume you have a method to post the review, replace 'post_review' with your actual method
+        post_review(json_payload)
+
+        # Redirect to the dealer details page
+        return HttpResponseRedirect(reverse('djangoapp:dealer_details', args=(dealer_id,)))
