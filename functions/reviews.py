@@ -2,6 +2,7 @@ from cloudant.client import Cloudant
 from cloudant.query import Query
 from flask import Flask, jsonify, request
 import atexit
+import uuid
 
 #Add your Cloudant service credentials here
 cloudant_username = '6d185720-8f36-4128-94c0-398699ccf4e7-bluemix'
@@ -62,7 +63,7 @@ def post_review():
     for field in required_fields:
         if field not in review_data:
             abort(400, description=f'Missing required field: {field}')
-            
+
     review_data['id'] = str(uuid.uuid4())
 
     # Save the review data as a new document in the Cloudant database
