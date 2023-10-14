@@ -136,7 +136,6 @@ def add_review(request, dealer_id):
         return render(request, 'djangoapp/add_review.html', context)
 
     elif request.method == "POST":
-        # Update json_payload["review"] with actual values from the form
         review = request.POST['review']
         purchase = request.POST.get('purchase', False)
         car_model = request.POST['car_model']
@@ -150,14 +149,15 @@ def add_review(request, dealer_id):
 
         # Now update the json_payload["review"] with actual values
         json_payload = {
+                "name": car_model_name,
+                "dealership": dealer_id,
                 "review": review,
                 "purchase": purchase,
-                "car_model": car_model,
-                "name": car_model_name,
-                "car_make": car_model,
-                "car_year": car_year,
+                "another": "field",
                 "purchase_date": purchase_date,
-                "dealership": dealer_id
+                "car_make": car_model,
+                "car_model": car_model,
+                "car_year": car_year,
         }
 
         url = "https://rafaelmagnav-5000.theiadocker-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/api/post_review"
