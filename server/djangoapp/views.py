@@ -144,7 +144,7 @@ def add_review(request, dealer_id):
         car_model_obj = CarModel.objects.filter(id=car_model)
         car_model_name = car_model_obj[0].name
         car_make = car_model_obj[0].car_make
-        print(car_make)
+        car_year = car_model_obj[0].year
         # Convert purchasedate to ISO format
         purchase_date = datetime.strptime(purchase_date_str, '%m/%d/%Y').isoformat()
 
@@ -153,12 +153,14 @@ def add_review(request, dealer_id):
                 "review": review,
                 "purchase": purchase,
                 "car_model": car_model,
+                "name": car_model_name,
+                "car_make": car_model,
+                "car_year": car_year,
                 "purchase_date": purchase_date,
                 "dealership": dealer_id
-                # Add other fields as needed
         }
 
-        url = "https://rafaelmagnav-5000.theiadocker-3-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/api/post_review"
+        url = "https://rafaelmagnav-5000.theiadocker-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/api/post_review"
 
         # Assume you have a method to post the review, replace 'post_review' with your actual method
         response = post_request(url, json_payload)
