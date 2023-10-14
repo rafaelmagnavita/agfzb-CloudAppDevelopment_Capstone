@@ -125,14 +125,14 @@ def get_dealer_details(request, dealer_id):
 
 def add_review(request, dealer_id):
     context = {}
+    cars = CarModel.objects.filter(dealer_id=dealer_id)
+    context['cars'] = cars
+    context['dealer_id'] = dealer_id
     # Assuming you have a Dealer model and a related Car model
     # You need to replace 'Dealer' and 'Car' with your actual model names
 
     if request.method == "GET":
         # Query cars with the dealer id to be reviewed
-        cars = CarModel.objects.filter(dealer_id=dealer_id)
-        context['cars'] = cars
-        context['dealer_id'] = dealer_id
         return render(request, 'djangoapp/add_review.html', context)
 
     elif request.method == "POST":
@@ -141,7 +141,10 @@ def add_review(request, dealer_id):
         purchase = request.POST.get('purchase', False)
         car_model = request.POST['car_model']
         purchase_date_str = request.POST['purchase_date']
-
+        car_model_obj = CarModel.objects.filter(id=car_model)
+        car_model_name = car_model_obj[0].name
+        car_make = car_model_obj[0].car_make
+        print(car_make)
         # Convert purchasedate to ISO format
         purchase_date = datetime.strptime(purchase_date_str, '%m/%d/%Y').isoformat()
 
