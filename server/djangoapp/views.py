@@ -117,10 +117,8 @@ def get_dealer_details(request, dealer_id):
         context['dealer_reviews'] = dealer_reviews
         url2 = "https://rafaelmagnav-3000.theiadocker-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/dealerships/get"
         dealerships = get_dealers_from_cf(url2)
-        
         dealership_name = next((dealer.full_name for dealer in dealerships if dealer.id == dealer_id), None)
         context['dealer_id'] = dealer_id
-
         context['dealership_name'] = dealership_name
         return render(request, 'djangoapp/dealer_details.html', context)
 
@@ -129,8 +127,11 @@ def add_review(request, dealer_id):
     cars = CarModel.objects.filter(dealer_id=dealer_id)
     context['cars'] = cars
     context['dealer_id'] = dealer_id
-    # Assuming you have a Dealer model and a related Car model
-    # You need to replace 'Dealer' and 'Car' with your actual model names
+    url2 = "https://rafaelmagnav-3000.theiadocker-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/dealerships/get"
+    dealerships = get_dealers_from_cf(url2)
+    dealership_name = next((dealer.full_name for dealer in dealerships if dealer.id == dealer_id), None)
+    context['dealer_id'] = dealer_id
+    context['dealership_name'] = dealership_name
 
     if request.method == "GET":
         # Query cars with the dealer id to be reviewed
