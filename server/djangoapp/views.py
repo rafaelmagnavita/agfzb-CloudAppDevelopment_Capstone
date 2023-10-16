@@ -141,25 +141,32 @@ def add_review(request, dealer_id):
         car_model = request.POST['car_model']
         purchase_date_str = request.POST['purchase_date']
         car_model_obj = CarModel.objects.filter(id=car_model)
-        car_model_name = car_model_obj[0].name
-        car_make = car_model_obj[0].car_make
+        username = request.user.username
+        car_model = car_model_obj[0].name
+        car_make = car_model_obj[0].car_make.name
         car_year = car_model_obj[0].year
+        year = int(car_year.strftime("%Y"))
+        if purchase == 'on':
+            purchase = True
+        elif purchase != 'on':
+            purchase = False
         # Convert purchasedate to ISO format
-        purchase_date = datetime.strptime(purchase_date_str, '%m/%d/%Y').isoformat()
 
         # Now update the json_payload["review"] with actual values
         json_payload = {
-                "name": car_model_name,
+                "name": username,
                 "dealership": dealer_id,
                 "review": review,
                 "purchase": purchase,
                 "another": "field",
-                "purchase_date": purchase_date,
-                "car_make": car_model,
+                "purchase_date": purchase_date_str,
+                "car_make": car_make,
                 "car_model": car_model,
-                "car_year": car_year,
+                "car_year": year,
         }
-
+        print(request.POST)
+        print(json_payload)
+        json_payload = dict()
         url = "https://rafaelmagnav-5000.theiadocker-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/api/post_review"
 
         # Assume you have a method to post the review, replace 'post_review' with your actual method
