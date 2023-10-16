@@ -4,11 +4,16 @@
 
 {% block content %}
 <nav class="navbar navbar-light bg-light">
-    <span class="navbar-brand mb-0 h1">Reviews for <b> {{ dealership_name }}</b></span>
+    <span class="navbar-brand mb-0 h1">Reviews for <b>{{ dealership_name }}</b></span>
 </nav>
-<div class="card-group">
-    {% for review in dealer_reviews %}
-    <div class="card m-2 border">
+
+{% with cards_per_row=4 %}
+  {% for review in dealer_reviews %}
+    {% if forloop.counter0|divisibleby:cards_per_row %}
+      <div class="card-group" style="display: flex; flex-wrap: wrap; justify-content: space-between;">
+    {% endif %}
+    
+    <div class="card m-2 border" style="width: calc(25% - 1rem);"> <!-- Adjust the width as needed -->
         <div class="card-header text-left">
             <img class="card-img-top" src="{% if 'normal' in review.review|lower %}{{ MEDIA_URL }}/emoji/neutral.png{% elif review.sentiment == 'positive' %}{{ MEDIA_URL }}/emoji/positive.png{% elif review.sentiment == 'negative' %}{{ MEDIA_URL }}/emoji/negative.png{% else %}{{ MEDIA_URL }}/emoji/neutral.png{% endif %}" alt="Sentiment Emoji" style="width: 25px; height: 25px;">
         </div>
@@ -18,6 +23,11 @@
             <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
         </div>
     </div>
-    {% endfor %}
-</div>
+    
+    {% if forloop.counter|divisibleby:cards_per_row or forloop.last %}
+      </div>
+    {% endif %}
+  {% endfor %}
+{% endwith %}
+
 {% endblock %}
