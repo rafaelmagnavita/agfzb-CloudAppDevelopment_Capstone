@@ -119,6 +119,7 @@ def get_dealer_details(request, dealer_id):
         dealerships = get_dealers_from_cf(url2)
         
         dealership_name = next((dealer.full_name for dealer in dealerships if dealer.id == dealer_id), None)
+        context['dealer_id'] = dealer_id
 
         context['dealership_name'] = dealership_name
         return render(request, 'djangoapp/dealer_details.html', context)

@@ -5,6 +5,7 @@
 {% block content %}
 <nav class="navbar navbar-light bg-light">
     <span class="navbar-brand mb-0 h1">Reviews for <b>{{ dealership_name }}</b></span>
+    <a href="{% url 'djangoapp:add_review' dealer_id=dealer_id %}" class="btn btn-primary">Add Review</a>
 </nav>
 
 {% with cards_per_row=4 %}
@@ -13,7 +14,7 @@
       <div class="card-group" style="display: flex; flex-wrap: wrap; justify-content: space-between;">
     {% endif %}
     
-    <div class="card m-2 border" style="width: calc(25% - 1rem);"> <!-- Adjust the width as needed -->
+    <div class="card m-2 border" style="width: calc(25% - 1rem);">
         <div class="card-header text-left">
             <img class="card-img-top" src="{% if 'normal' in review.review|lower %}{{ MEDIA_URL }}/emoji/neutral.png{% elif review.sentiment == 'positive' %}{{ MEDIA_URL }}/emoji/positive.png{% elif review.sentiment == 'negative' %}{{ MEDIA_URL }}/emoji/negative.png{% else %}{{ MEDIA_URL }}/emoji/neutral.png{% endif %}" alt="Sentiment Emoji" style="width: 25px; height: 25px;">
         </div>
